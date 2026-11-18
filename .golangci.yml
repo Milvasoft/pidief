@@ -1,0 +1,27 @@
+version: "2"
+run:
+  timeout: 5m
+  build-tags: [nodynamic]
+linters:
+  default: standard
+  enable:
+    - bodyclose
+    - gosec
+    - misspell
+    - unconvert
+  settings:
+    staticcheck:
+      checks: ["all", "-ST1000", "-ST1003", "-ST1016", "-ST1020", "-ST1021", "-ST1022", "-QF1002", "-QF1003"]
+    gosec:
+      excludes:
+        - G104 # unchecked errors are covered by errcheck with its exclusions
+        - G304 # the CLI reads files the user names on purpose
+        - G306 # output files are 0644 like other CLI tools
+        - G115 # integer conversions are bounded by the PDF/image data
+  exclusions:
+    presets: [std-error-handling]
+    rules:
+      - path: _test\.go
+        linters: [gosec, errcheck, bodyclose]
+formatters:
+  enable: [gofmt]

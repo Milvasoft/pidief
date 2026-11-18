@@ -1,0 +1,7 @@
+/bin/
+*.exe
+/dist/
+clients/dotnet/**/bin/
+clients/dotnet/**/obj/
+*.nupkg
+/test/out/

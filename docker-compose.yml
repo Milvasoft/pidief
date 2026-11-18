@@ -1,0 +1,33 @@
+# Example: pidief next to an application. Start with: docker compose up -d
+services:
+  pidief:
+    image: pidief:latest
+    build:
+      context: .
+      args:
+        VERSION: 0.1.0
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      PIDIEF_API_KEYS: ${PIDIEF_API_KEYS:?set PIDIEF_API_KEYS (comma-separated)}
+      PIDIEF_CONCURRENCY: "4"
+      PIDIEF_QUEUE_SIZE: "100"
+      PIDIEF_MAX_REQUEST_MB: "50"
+      PIDIEF_MAX_TIMEOUT: "120s"
+      PIDIEF_ALLOW_EXTERNAL: "false"
+      PIDIEF_LOG_FORMAT: json
+    # Chromium uses shared memory; 256 MB avoids /dev/shm crashes on large documents.
+    shm_size: 256mb
+    read_only: true
+    tmpfs:
+      - /tmp:size=512m
+      - /home/pidief:size=64m
+    security_opt:
+      - no-new-privileges:true
+    cap_drop: [ALL]
+    deploy:
+      resources:
+        limits:
+          memory: 1g
+          cpus: "2"

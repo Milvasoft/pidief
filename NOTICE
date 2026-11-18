@@ -1,0 +1,56 @@
+pidief
+Copyright 2026 Milvasoft
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+It includes or links the following third-party software. All of it is under
+permissive licenses compatible with the Apache License 2.0; no GPL, LGPL or
+AGPL code is linked into pidief.
+
+Go modules linked into the pidief binary
+----------------------------------------
+github.com/chromedp/chromedp, github.com/chromedp/cdproto ........ MIT
+github.com/go-json-experiment/json ................................. BSD-3-Clause
+github.com/pdfcpu/pdfcpu ........................................... Apache-2.0
+github.com/hhrutter/tiff ........................................... BSD-3-Clause
+github.com/klippa-app/go-pdfium .................................... MIT
+  embedded pdfium.wasm (PDFium, https://pdfium.googlesource.com) ... BSD-3-Clause / Apache-2.0
+github.com/tetratelabs/wazero ...................................... Apache-2.0
+github.com/jolestar/go-commons-pool/v2 ............................. Apache-2.0
+github.com/google/uuid ............................................. BSD-3-Clause
+github.com/gen2brain/webp .......................................... MIT
+  embedded libwebp ................................................. BSD-3-Clause
+github.com/ebitengine/purego ....................................... Apache-2.0
+golang.org/x/image, x/crypto, x/sys, x/text ........................ BSD-3-Clause
+github.com/spf13/cobra ............................................. Apache-2.0
+github.com/spf13/pflag ............................................. BSD-3-Clause
+github.com/inconshreveable/mousetrap ............................... Apache-2.0
+github.com/prometheus/client_golang, client_model, common .......... Apache-2.0
+github.com/beorn7/perks ............................................ MIT
+github.com/cespare/xxhash/v2 ....................................... MIT
+github.com/munnerz/goautoneg ....................................... BSD-3-Clause
+google.golang.org/protobuf ......................................... BSD-3-Clause
+go.yaml.in/yaml/v3 ................................................. MIT and Apache-2.0
+github.com/xdg-go/stringprep ....................................... Apache-2.0
+github.com/mattn/go-runewidth, github.com/clipperhouse/uax29/v2 .... MIT
+
+Embedded assets
+---------------
+Onest font (Regular, Medium, SemiBold, Bold), static instances generated
+from the upstream variable font, and PidiefStamp-Regular (Onest Regular with
+a different family name). Copyright 2021 The Onest Project Authors
+(https://github.com/googlefonts/onest). SIL Open Font License 1.1, see
+internal/assets/fonts/OFL.txt. Onest declares no Reserved Font Name.
+
+sRGB-v2-micro.icc from https://github.com/saucecontrol/Compact-ICC-Profiles,
+CC0 1.0 Universal.
+
+Docker image (separate packages, not linked into pidief)
+---------------------------------------------------------
+debian:trixie-slim, chromium-headless-shell (BSD-3-Clause and others; runs as
+a separate process), tini (MIT), fonts-dejavu-core (Bitstream Vera license),
+fonts-liberation2 (SIL OFL 1.1), fontconfig (MIT-style).
+
+.NET client (Pidief.Client)
+---------------------------
+Microsoft.Extensions.Http ......................................... MIT

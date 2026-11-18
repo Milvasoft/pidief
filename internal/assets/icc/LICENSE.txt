@@ -1,0 +1,1 @@
+sRGB-v2-micro.icc: from https://github.com/saucecontrol/Compact-ICC-Profiles, CC0 1.0 Universal (public domain).

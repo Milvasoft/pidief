@@ -1,0 +1,9 @@
+.git
+bin
+clients
+docs
+test
+**/*.pdf
+**/node_modules
+**/bin
+**/obj

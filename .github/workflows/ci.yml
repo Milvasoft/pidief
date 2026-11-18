@@ -1,0 +1,96 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  go:
+    name: Go (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, ubuntu-24.04-arm, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - name: Install Chrome
+        id: chrome
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: stable
+      - run: go vet ./...
+      - run: go build -tags nodynamic ./...
+      - name: Test
+        shell: bash
+        env:
+          PIDIEF_CHROMIUM_PATH: ${{ steps.chrome.outputs.chrome-path }}
+          PIDIEF_REQUIRE_BROWSER: "1"
+          # Ubuntu 24.04 restricts unprivileged user namespaces, which Chrome's sandbox needs.
+          PIDIEF_CHROMIUM_NO_SANDBOX: ${{ runner.os == 'Linux' && 'true' || 'false' }}
+        run: go test -tags nodynamic -count=1 ./...
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - uses: golangci/golangci-lint-action@v8
+        with:
+          version: latest
+
+  dotnet:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+      - run: dotnet build clients/dotnet/Pidief.Client.slnx -c Release
+      - run: dotnet test clients/dotnet/Pidief.Client.slnx -c Release --no-build
+      - run: dotnet pack clients/dotnet/src/Pidief.Client -c Release --no-build -o out
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Build image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          load: true
+          tags: pidief:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - name: HTML to PDF with Turkish text inside the container
+        run: |
+          mkdir work && chmod 777 work && cd work
+          printf '<html><body style="font-family:Onest"><h1>Çağrı Şükrü İğdır ığüşöç</h1></body></html>' > index.html
+          docker run --rm -v "$PWD:/work" -w /work pidief:ci html index.html --page-numbers -o out.pdf
+          docker run --rm -v "$PWD:/work" -w /work pidief:ci text out.pdf | tee text.json
+          grep -q "Çağrı Şükrü İğdır ığüşöç" text.json
+          grep -q "Sayfa 1 / 1" text.json
+      - name: API smoke test
+        run: |
+          docker run -d --name api -p 3000:3000 --shm-size 256m -e PIDIEF_API_KEYS=ci pidief:ci
+          for i in $(seq 1 60); do curl -sf localhost:3000/health/ready && break; sleep 1; done
+          curl -sf -H "X-Api-Key: ci" -F "html=<p>Merhaba dünya</p>" localhost:3000/v1/html -o api.pdf
+          head -c 5 api.pdf | grep -q "%PDF-"
+          test "$(curl -s -o /dev/null -w '%{http_code}' -F 'html=<p>x</p>' localhost:3000/v1/html)" = "401"
+          docker rm -f api
