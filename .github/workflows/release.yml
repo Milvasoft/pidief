@@ -1,7 +1,7 @@
 name: Release
 
 # Tag vX.Y.Z on master to release: CLI binaries on the GitHub release, the multi-arch image on
-# ghcr.io/milvasoft/pidief, and the Pidief.Client package on NuGet when the NUGET_API_KEY secret exists.
+# ghcr.io/milvasoft/pidief, and the Pidief.Client package on NuGet via Trusted Publishing.
 
 on:
   push:
@@ -117,6 +117,9 @@ jobs:
 
   nuget:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # NuGet Trusted Publishing exchanges the GitHub OIDC token for a short-lived key
     steps:
       - uses: actions/checkout@v4
         with:
@@ -132,12 +135,17 @@ jobs:
         with:
           name: nuget
           path: out/*
-      - name: Push to NuGet (skipped without NUGET_API_KEY)
+      # Trusted Publishing: no stored API key. nuget.org trusts this repository and release.yml
+      # (policy owned by Milvasoft) and exchanges the GitHub OIDC token for a short-lived key.
+      # Forks have no policy, so the step fails there and the package is only built.
+      - name: NuGet login (Trusted Publishing)
+        id: nuget-login
+        if: github.repository == 'Milvasoft/pidief'
+        uses: NuGet/login@v1
+        with:
+          user: ${{ vars.NUGET_USER || 'bugrakosen' }}
+      - name: Push to NuGet
+        if: github.repository == 'Milvasoft/pidief'
         env:
-          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-        run: |
-          if [ -z "$NUGET_API_KEY" ]; then
-            echo "::notice::NUGET_API_KEY is not set; the package is built but not published."
-            exit 0
-          fi
-          dotnet nuget push "out/*.nupkg" --api-key "$NUGET_API_KEY" --source https://api.nuget.org/v3/index.json --skip-duplicate
+          NUGET_API_KEY: ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
+        run: dotnet nuget push "out/*.nupkg" --api-key "$NUGET_API_KEY" --source https://api.nuget.org/v3/index.json --skip-duplicate
