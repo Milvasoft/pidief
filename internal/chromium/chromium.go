@@ -37,6 +37,8 @@ type Config struct {
 	NoSandbox bool   // needed in most containers (no user namespaces)
 	// RestartAfter restarts the browser after this many conversions to bound memory growth (0 = never).
 	RestartAfter int
+	// StartTimeout bounds launching the browser and attaching to it (default 60s).
+	StartTimeout time.Duration
 	Logger       *slog.Logger
 }
 
@@ -49,7 +51,7 @@ type Browser struct {
 	cancel   context.CancelFunc
 	browser  context.Context
 	uses     int
-	active   sync.WaitGroup
+	active   *sync.WaitGroup // conversions running on the current process
 }
 
 // New returns a Browser; the process starts on first use.
@@ -57,7 +59,10 @@ func New(cfg Config) *Browser {
 	if cfg.Logger == nil {
 		cfg.Logger = slog.Default()
 	}
-	return &Browser{cfg: cfg}
+	if cfg.StartTimeout <= 0 {
+		cfg.StartTimeout = 60 * time.Second
+	}
+	return &Browser{cfg: cfg, active: &sync.WaitGroup{}}
 }
 
 // ExecPathFromEnv returns the browser path from PIDIEF_CHROMIUM_PATH, or "" to auto-detect.
@@ -84,8 +89,17 @@ func (b *Browser) start() error {
 	}
 	allocCtx, cancelAlloc := chromedp.NewExecAllocator(context.Background(), opts...)
 	bctx, cancelBrowser := chromedp.NewContext(allocCtx)
-	// The first Do starts the browser and binds its life to bctx (no timeout here).
-	if err := chromedp.Do(bctx); err != nil {
+	// The first Do starts the browser and binds its life to bctx, so it cannot carry a timeout
+	// itself; bound it from outside instead (a browser that never answers must not hang callers).
+	started := make(chan error, 1)
+	go func() { started <- chromedp.Do(bctx) }()
+	var err error
+	select {
+	case err = <-started:
+	case <-time.After(b.cfg.StartTimeout):
+		err = fmt.Errorf("no answer within %s", b.cfg.StartTimeout)
+	}
+	if err != nil {
 		cancelBrowser()
 		cancelAlloc()
 		return fmt.Errorf("start chromium: %w", err)
@@ -104,10 +118,9 @@ func (b *Browser) acquire() (context.Context, func(), error) {
 	defer b.mu.Unlock()
 	if b.browser != nil && (b.browser.Err() != nil ||
 		(b.cfg.RestartAfter > 0 && b.uses >= b.cfg.RestartAfter)) {
-		old := b.cancel
-		wg := &b.active
+		old, wg := b.cancel, b.active
 		b.browser, b.cancel = nil, nil
-		b.active = sync.WaitGroup{}
+		b.active = &sync.WaitGroup{}
 		go func() { wg.Wait(); old() }() // let running conversions finish first
 		b.cfg.Logger.Info("chromium recycled")
 	}
@@ -117,8 +130,8 @@ func (b *Browser) acquire() (context.Context, func(), error) {
 		}
 	}
 	b.uses++
-	b.active.Add(1)
-	wg := &b.active
+	wg := b.active
+	wg.Add(1)
 	return b.browser, wg.Done, nil
 }
 

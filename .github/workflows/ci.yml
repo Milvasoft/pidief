@@ -44,7 +44,9 @@ jobs:
         shell: bash
         env:
           PIDIEF_CHROMIUM_PATH: ${{ steps.chrome.outputs.chrome-path || steps.chromium.outputs.path }}
-          PIDIEF_REQUIRE_BROWSER: "1"
+          # On macOS runners headless Chrome does not answer the first target attach, so the
+          # Chromium tests are skipped there; Linux (amd64, arm64) and Windows run them.
+          PIDIEF_REQUIRE_BROWSER: ${{ runner.os == 'macOS' && '0' || '1' }}
           # Ubuntu 24.04 restricts unprivileged user namespaces, which Chrome's sandbox needs.
           PIDIEF_CHROMIUM_NO_SANDBOX: ${{ runner.os == 'Linux' && 'true' || 'false' }}
         run: go test -tags nodynamic -count=1 ./...
