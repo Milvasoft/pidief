@@ -4,6 +4,7 @@
 
 [![CI](https://github.com/Milvasoft/pidief/actions/workflows/ci.yml/badge.svg)](https://github.com/Milvasoft/pidief/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
+[![Website](https://img.shields.io/badge/website-pidief--website.vercel.app-ff5a45.svg)](https://pidief-website.vercel.app/)
 
 A self-hosted PDF toolkit with a **CLI and an HTTP API** that do exactly the same things: both are generated
 from one operation table (`pidief pages rotate` = `POST /v1/pages/rotate`, same parameters).
