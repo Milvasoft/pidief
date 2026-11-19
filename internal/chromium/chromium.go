@@ -15,6 +15,7 @@ import (
 	"net/url"
 	"os"
 	"path"
+	"runtime"
 	"strings"
 	"sync"
 	"time"
@@ -102,7 +103,7 @@ func (b *Browser) start() error {
 	if err != nil {
 		cancelBrowser()
 		cancelAlloc()
-		return fmt.Errorf("start chromium: %w", err)
+		return fmt.Errorf("start chromium: %w%s", err, startHint(b.cfg.ExecPath))
 	}
 	b.allocCtx = allocCtx
 	b.browser = bctx
@@ -110,6 +111,17 @@ func (b *Browser) start() error {
 	b.uses = 0
 	b.cfg.Logger.Info("chromium started")
 	return nil
+}
+
+// startHint explains a known failure: on recent macOS versions the "Google Chrome for Testing"
+// bundle cannot start its helper processes outside an interactive session (Mach port
+// rendezvous lookups are denied), so it never answers. chrome-headless-shell and Google Chrome work.
+func startHint(execPath string) string {
+	if runtime.GOOS == "darwin" && strings.Contains(execPath, "Chrome for Testing") {
+		return " (on macOS, Chrome for Testing often cannot start its helper processes; " +
+			"set PIDIEF_CHROMIUM_PATH to chrome-headless-shell or Google Chrome instead)"
+	}
+	return ""
 }
 
 // acquire returns the browser context, starting or recycling the process when needed.

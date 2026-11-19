@@ -31,6 +31,9 @@ capabilities, memory limit) is in [docker-compose.yml](docker-compose.yml).
 CLI binaries for Linux, macOS and Windows (amd64, arm64) are attached to each
 [release](https://github.com/Milvasoft/pidief/releases). HTML and template commands need Chrome or Chromium
 on the machine (`PIDIEF_CHROMIUM_PATH` sets the path); all other commands do not.
+On macOS use Google Chrome or [chrome-headless-shell](https://developer.chrome.com/blog/chrome-headless-shell)
+(`npx @puppeteer/browsers install chrome-headless-shell@stable`): the "Chrome for Testing" bundle often cannot
+start its helper processes outside an interactive login session, such as on CI runners.
 
 From source (Go 1.26+):
 

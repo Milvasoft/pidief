@@ -27,7 +27,7 @@ jobs:
           go-version-file: go.mod
       - name: Install Chrome
         id: chrome
-        if: runner.os != 'Linux' || runner.arch != 'ARM64'
+        if: runner.os == 'Windows' || (runner.os == 'Linux' && runner.arch != 'ARM64')
         uses: browser-actions/setup-chrome@v2
         with:
           chrome-version: stable
@@ -38,15 +38,22 @@ jobs:
         run: |
           npx -y playwright@1.56.0 install --with-deps chromium
           echo "path=$(ls -d "$HOME"/.cache/ms-playwright/chromium-*/chrome-linux*/chrome | head -1)" >> "$GITHUB_OUTPUT"
+      # On macOS 26 runners the "Chrome for Testing" bundle cannot start its helper processes
+      # (Mach port rendezvous lookups are denied), so use chrome-headless-shell, the same engine
+      # the Docker image runs.
+      - name: Install chrome-headless-shell (macOS)
+        id: shell
+        if: runner.os == 'macOS'
+        run: |
+          npx -y @puppeteer/browsers@2.10.10 install chrome-headless-shell@stable --path "$RUNNER_TEMP/browsers" | tee out.txt
+          echo "path=$(tail -1 out.txt | awk '{print $2}')" >> "$GITHUB_OUTPUT"
       - run: go vet ./...
       - run: go build -tags nodynamic ./...
       - name: Test
         shell: bash
         env:
-          PIDIEF_CHROMIUM_PATH: ${{ steps.chrome.outputs.chrome-path || steps.chromium.outputs.path }}
-          # On macOS runners headless Chrome does not answer the first target attach, so the
-          # Chromium tests are skipped there; Linux (amd64, arm64) and Windows run them.
-          PIDIEF_REQUIRE_BROWSER: ${{ runner.os == 'macOS' && '0' || '1' }}
+          PIDIEF_CHROMIUM_PATH: ${{ steps.chrome.outputs.chrome-path || steps.chromium.outputs.path || steps.shell.outputs.path }}
+          PIDIEF_REQUIRE_BROWSER: "1"
           # Ubuntu 24.04 restricts unprivileged user namespaces, which Chrome's sandbox needs.
           PIDIEF_CHROMIUM_NO_SANDBOX: ${{ runner.os == 'Linux' && 'true' || 'false' }}
         run: go test -tags nodynamic -count=1 ./...
