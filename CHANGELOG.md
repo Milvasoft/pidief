@@ -5,9 +5,23 @@ and versions follow [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-11-19
+
 ### Added
 
 - Logo (`assets/logo`), used as the icon of the `Pidief.Client` NuGet package.
+
+### Fixed
+
+- A Chromium process that never answers now fails start-up after 60 seconds instead of hanging readiness
+  checks and requests.
+- Recycling Chromium no longer mixes the running conversions of the old and the new process.
+- On macOS, the start-up error explains that "Chrome for Testing" often cannot start its helper processes
+  and suggests chrome-headless-shell or Google Chrome.
+
+### Changed
+
+- CI: GitHub Actions on Node 24 releases; browser tests run on Linux amd64/arm64, Windows and macOS.
 
 ## [0.1.0] - 2026-11-19
 
@@ -24,5 +38,6 @@ and versions follow [Semantic Versioning](https://semver.org/).
 - Docker image for linux/amd64 and linux/arm64.
 - `Pidief.Client` .NET client with typed methods, timeouts and retries.
 
-[Unreleased]: https://github.com/Milvasoft/pidief/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/Milvasoft/pidief/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/Milvasoft/pidief/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/Milvasoft/pidief/releases/tag/v0.1.0
