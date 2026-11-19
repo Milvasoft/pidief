@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="112 40 288 432" role="img" aria-label="pidief">
+  <title>pidief</title>
+  <g fill="none" stroke-width="52">
+    <path d="M164 420V256" stroke="#1B1F2A" stroke-linecap="round"/>
+    <path d="M164 256A92 92 0 0 1 348 256" stroke="#1B1F2A"/>
+    <path d="M348 92V256" stroke="#FF5A45" stroke-linecap="round"/>
+    <path d="M348 256A92 92 0 0 1 164 256" stroke="#FF5A45"/>
+  </g>
+</svg>

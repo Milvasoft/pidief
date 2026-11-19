@@ -1,3 +1,5 @@
+<p align="center"><img src="assets/logo/pidief-icon.svg" width="112" alt="pidief logo"></p>
+
 # pidief
 
 [![CI](https://github.com/Milvasoft/pidief/actions/workflows/ci.yml/badge.svg)](https://github.com/Milvasoft/pidief/actions/workflows/ci.yml)

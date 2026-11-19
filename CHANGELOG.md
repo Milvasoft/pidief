@@ -5,6 +5,10 @@ and versions follow [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- Logo (`assets/logo`), used as the icon of the `Pidief.Client` NuGet package.
+
 ## [0.1.0] - 2026-11-19
 
 ### Added
