@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="pidief">
+  <title>pidief</title>
+  <rect width="512" height="512" rx="112" fill="#1B1F2A"/>
+  <g fill="none" stroke-width="52">
+    <!-- p: stem up from the bottom, bowl over the top -->
+    <path d="M164 420V256" stroke="#F5F3EE" stroke-linecap="round"/>
+    <path d="M164 256A92 92 0 0 1 348 256" stroke="#F5F3EE"/>
+    <!-- d: the same letter turned 180 degrees -->
+    <path d="M348 92V256" stroke="#FF5A45" stroke-linecap="round"/>
+    <path d="M348 256A92 92 0 0 1 164 256" stroke="#FF5A45"/>
+  </g>
+</svg>

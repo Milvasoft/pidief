@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>pidief — every PDF job, one small binary</title>
+  <meta name="description" content="pidief is an open-source PDF toolkit: HTML and templates to PDF with headless Chromium, merge, split, rotate, watermark, stamp, compress, PDF/A-2b, encryption and previews. One CLI, one HTTP API, Apache-2.0.">
+  <meta name="theme-color" content="#12151C">
+  <link rel="icon" href="assets/pidief-icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/pidief-icon-256.png">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="pidief — every PDF job, one small binary">
+  <meta property="og:description" content="HTML in, PDF out. Merge, split, stamp, compress, PDF/A, encrypt, render. CLI and HTTP API. Apache-2.0.">
+  <meta property="og:image" content="https://milvasoft.github.io/pidief/assets/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="progress" aria-hidden="true"><span></span></div>
+
+  <header class="nav">
+    <a class="brand" href="#top" aria-label="pidief home">
+      <svg class="brand-mark" viewBox="112 40 288 432" aria-hidden="true">
+        <path d="M164 420V256" class="s-p cap"/><path d="M164 256A92 92 0 0 1 348 256" class="s-p"/>
+        <path d="M348 92V256" class="s-d cap"/><path d="M348 256A92 92 0 0 1 164 256" class="s-d"/>
+      </svg>
+      <span>pidief</span>
+    </a>
+    <nav>
+      <a href="#render">Render</a>
+      <a href="#ops">Operations</a>
+      <a href="#doors">CLI &amp; API</a>
+      <a href="#install">Install</a>
+      <a class="gh" href="https://github.com/Milvasoft/pidief" rel="noopener">GitHub</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- 0. HERO ------------------------------------------------------------ -->
+    <section class="scene hero" id="top" data-vh="160" data-scene="hero">
+      <div class="stage">
+        <div class="grid-bg" aria-hidden="true"></div>
+        <svg class="hero-mark" viewBox="0 0 512 512" aria-hidden="true">
+          <g class="hm-rot">
+            <path d="M164 420V256" class="s-p cap draw"/><path d="M164 256A92 92 0 0 1 348 256" class="s-p draw"/>
+            <path d="M348 92V256" class="s-d cap draw"/><path d="M348 256A92 92 0 0 1 164 256" class="s-d draw"/>
+          </g>
+        </svg>
+        <div class="hero-copy">
+          <p class="eyebrow"><span>open source</span><span>Apache-2.0</span><span>v0.1.1</span></p>
+          <h1 class="hero-title"><span class="w">HTML</span> <span class="w">in.</span><br class="mbr"> <span class="w accent">PDF</span> <span class="w accent">out.</span></h1>
+          <p class="hero-sub">Every PDF job your product needs, in one small binary — a CLI and an HTTP API that do exactly the same things.</p>
+        </div>
+        <div class="scroll-hint" aria-hidden="true"><span></span>scroll</div>
+      </div>
+    </section>
+
+    <!-- 1. RENDER ---------------------------------------------------------- -->
+    <section class="scene render" id="render" data-vh="330" data-scene="render">
+      <div class="stage">
+        <div class="caption">
+          <p class="kicker">01 · Render</p>
+          <h2>Chromium prints it.<br>pidief gets it right.</h2>
+          <ul class="facts">
+            <li data-at=".35">Embedded fonts, every Turkish glyph</li>
+            <li data-at=".55">Table headers repeat on every page</li>
+            <li data-at=".75">“Sayfa X / Y” footers out of the box</li>
+          </ul>
+        </div>
+        <div class="code-card" aria-hidden="true">
+          <div class="cc-bar"><i></i><i></i><i></i><span>report.html</span></div>
+<pre><code><span class="ln"><b>&lt;h1&gt;</b>Hak Ediş Raporu<b>&lt;/h1&gt;</b></span>
+<span class="ln"><b>&lt;table&gt;</b></span>
+<span class="ln">  <b>&lt;thead&gt;</b>Poz · Açıklama · Tutar<b>&lt;/thead&gt;</b></span>
+<span class="ln">  <i>{{#each kalemler}}</i></span>
+<span class="ln">  <b>&lt;tr&gt;</b>{{poz}} · {{ad}} · <i>{{para tutar}}</i><b>&lt;/tr&gt;</b></span>
+<span class="ln">  <i>{{/each}}</i></span>
+<span class="ln"><b>&lt;/table&gt;</b></span>
+<span class="ln cmd">$ pidief template report.html data.json --page-numbers</span></code></pre>
+        </div>
+        <div class="paper-rig" aria-hidden="true">
+          <div class="scan"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. OPERATIONS ------------------------------------------------------ -->
+    <section class="scene ops" id="ops" data-vh="520" data-scene="ops">
+      <div class="stage">
+        <div class="caption">
+          <p class="kicker">02 · Operations</p>
+          <h2>Then do anything<br>else to it.</h2>
+          <ol class="oplist">
+            <li><span>merge</span><em>pidief merge a.pdf b.pdf c.pdf</em></li>
+            <li><span>split</span><em>pidief split report.pdf --span 1</em></li>
+            <li><span>rotate</span><em>pidief pages rotate scan.pdf --degrees 90</em></li>
+            <li><span>watermark</span><em>pidief watermark report.pdf --text DRAFT</em></li>
+            <li><span>compress</span><em>pidief compress scans.pdf --image-quality 60</em></li>
+            <li><span>PDF/A + encrypt</span><em>pidief pdfa report.pdf &amp;&amp; pidief encrypt …</em></li>
+            <li><span>stamp</span><em>pidief stamp report.pdf --text APPROVED</em></li>
+          </ol>
+          <p class="opcmd" aria-live="polite"></p>
+        </div>
+        <div class="desk" aria-hidden="true">
+          <div class="badge b-merge">3 → 1</div>
+          <div class="badge b-size"><span class="from">2.4 MB</span> → <span class="to">0.38 MB</span></div>
+          <div class="badge b-pdfa">PDF/A-2b ✓</div>
+          <svg class="lock" viewBox="0 0 64 80"><path class="shackle" d="M18 36V24a14 14 0 0 1 28 0v12"/><rect x="8" y="34" width="48" height="40" rx="8"/><circle cx="32" cy="54" r="5"/></svg>
+          <div class="stamp"><span>APPROVED</span></div>
+        </div>
+        <div class="wipe" aria-hidden="true"></div>
+      </div>
+    </section>
+
+    <!-- 3. TWO DOORS ------------------------------------------------------- -->
+    <section class="scene doors" id="doors" data-vh="300" data-scene="doors">
+      <div class="stage">
+        <div class="doors-head">
+          <p class="kicker">03 · Two doors, one table</p>
+          <h2>The CLI and the API<br>can’t drift apart.</h2>
+          <p class="lede">Both are generated from one operation registry: same names, same parameters, same results.</p>
+        </div>
+        <div class="doors-grid">
+          <div class="door term">
+            <div class="door-label">CLI</div>
+            <pre><code class="term-line"></code><span class="caret"></span></pre>
+          </div>
+          <div class="registry" role="list">
+            <div class="reg-row" role="listitem">html</div>
+            <div class="reg-row" role="listitem">template</div>
+            <div class="reg-row" role="listitem">images</div>
+            <div class="reg-row" role="listitem">merge</div>
+            <div class="reg-row" role="listitem">split</div>
+            <div class="reg-row" role="listitem">pages rotate</div>
+            <div class="reg-row" role="listitem">watermark</div>
+            <div class="reg-row" role="listitem">stamp</div>
+            <div class="reg-row" role="listitem">compress</div>
+            <div class="reg-row" role="listitem">pdfa</div>
+            <div class="reg-row" role="listitem">encrypt</div>
+            <div class="reg-row" role="listitem">render</div>
+          </div>
+          <div class="door http">
+            <div class="door-label">HTTP</div>
+            <pre><code class="http-line"></code></pre>
+            <div class="http-res"><span class="ok">200 OK</span> <span class="ct">application/pdf</span></div>
+          </div>
+          <svg class="wires" aria-hidden="true"><path class="wire w-l"/><path class="wire w-r"/></svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. NUMBERS --------------------------------------------------------- -->
+    <section class="numbers" id="numbers">
+      <div class="numbers-inner">
+        <p class="kicker">04 · Small and open</p>
+        <h2 class="reveal">No LibreOffice. No AGPL.<br>No surprises on the invoice.</h2>
+        <div class="stats">
+          <div class="stat reveal"><b data-count="256">0</b><small>MiB</small><span>Docker image, amd64 + arm64</span></div>
+          <div class="stat reveal"><b data-count="71">0</b><small>MiB</small><span>idle memory, Chromium warm</span></div>
+          <div class="stat reveal"><b data-count="0.62" data-dec="2">0</b><small>s</small><span>p50 for a 10-page report</span></div>
+          <div class="stat reveal"><b data-count="19">0</b><small>ops</small><span>one table, CLI and API</span></div>
+        </div>
+        <div class="bars reveal" aria-label="Docker image size compared">
+          <div class="bar"><span class="bl">pidief</span><span class="bt"><i style="--w:.166"></i></span><span class="bv">256 MiB</span></div>
+          <div class="bar ghost"><span class="bl">typical Chromium + LibreOffice stack</span><span class="bt"><i style="--w:1"></i></span><span class="bv">~1.5 GB</span></div>
+        </div>
+        <ul class="chips reveal">
+          <li>Go, static binary, no cgo</li><li>PDFium WebAssembly previews</li><li>pdfcpu (Apache-2.0)</li>
+          <li>OpenAPI 3.1</li><li>Prometheus metrics</li><li>async jobs</li><li>.NET client on NuGet</li><li>PDF/A-2b, veraPDF-checked</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 5. INSTALL --------------------------------------------------------- -->
+    <section class="scene install" id="install" data-vh="150" data-scene="install">
+      <div class="stage">
+        <svg class="end-mark" viewBox="0 0 512 512" aria-hidden="true">
+          <path d="M164 420V256" class="s-p cap draw"/><path d="M164 256A92 92 0 0 1 348 256" class="s-p draw"/>
+          <path d="M348 92V256" class="s-d cap draw"/><path d="M348 256A92 92 0 0 1 164 256" class="s-d draw"/>
+        </svg>
+        <div class="install-copy">
+          <h2>Ship PDFs today.</h2>
+          <div class="cmds">
+            <div class="cmd"><span class="lbl">Docker</span><code>docker run -p 3000:3000 -e PIDIEF_API_KEYS=change-me ghcr.io/milvasoft/pidief</code><button type="button" class="copy" aria-label="Copy Docker command">Copy</button></div>
+            <div class="cmd"><span class="lbl">.NET</span><code>dotnet add package Pidief.Client</code><button type="button" class="copy" aria-label="Copy .NET command">Copy</button></div>
+            <div class="cmd"><span class="lbl">CLI</span><code>pidief html report.html --page-numbers -o report.pdf</code><button type="button" class="copy" aria-label="Copy CLI command">Copy</button></div>
+          </div>
+          <div class="ctas">
+            <a class="btn primary" href="https://github.com/Milvasoft/pidief" rel="noopener">Star on GitHub</a>
+            <a class="btn" href="https://github.com/Milvasoft/pidief/releases/latest" rel="noopener">Download the CLI</a>
+            <a class="btn" href="https://www.nuget.org/packages/Pidief.Client" rel="noopener">NuGet</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <span>© 2026 Milvasoft · Apache-2.0</span>
+    <span><a href="https://github.com/Milvasoft/pidief/blob/master/README.md">Docs</a> · <a href="https://github.com/Milvasoft/pidief/blob/master/docs/comparison.md">Why pidief</a> · <a href="https://github.com/Milvasoft/pidief/blob/master/SECURITY.md">Security</a></span>
+  </footer>
+
+  <template id="page-tpl">
+    <div class="page">
+      <div class="pg-wm">DRAFT</div>
+      <div class="pg-title">Hak Ediş Raporu — Şantiye</div>
+      <div class="pg-head"><span>Poz</span><span>Açıklama</span><span>Tutar</span></div>
+      <div class="pg-rows"></div>
+      <div class="pg-foot">Sayfa <b class="pn">1</b> / <b>3</b></div>
+    </div>
+  </template>
+
+  <script src="main.js" defer></script>
+</body>
+</html>
