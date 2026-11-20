@@ -5,6 +5,11 @@ and versions follow [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- `examples/annual-report`: a six-page report showing a full-bleed cover, JavaScript charts, a landscape
+  page in a portrait document, a long table, stamped page numbers, a seal image and PDF/A-2b.
+
 ## [0.1.1] - 2026-11-19
 
 ### Added

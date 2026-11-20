@@ -1,0 +1,636 @@
+{
+  "company": {
+    "name": "Example Cloud Inc.",
+    "short": "Example Cloud",
+    "city": "Springfield"
+  },
+  "report": {
+    "title": "2026 Annual Revenue Report",
+    "no": "RPT-2026-11",
+    "date": "2026-11-20",
+    "period": "January – November 2026",
+    "preparedBy": "Finance and Reporting"
+  },
+  "kpis": [
+    {
+      "name": "Total revenue",
+      "value": 1009019,
+      "kind": "money",
+      "change": 18.4
+    },
+    {
+      "name": "Active customers",
+      "value": 1284,
+      "kind": "number",
+      "change": 9.2
+    },
+    {
+      "name": "Days sales outstanding",
+      "value": 23,
+      "kind": "days",
+      "change": -12.5
+    },
+    {
+      "name": "Service availability",
+      "value": 99.982,
+      "kind": "percent",
+      "change": 0.03
+    }
+  ],
+  "monthly": [
+    {
+      "month": "Jan",
+      "revenue": 62002,
+      "costs": 41063
+    },
+    {
+      "month": "Feb",
+      "revenue": 76619,
+      "costs": 45857
+    },
+    {
+      "month": "Mar",
+      "revenue": 82632,
+      "costs": 50697
+    },
+    {
+      "month": "Apr",
+      "revenue": 92393,
+      "costs": 55913
+    },
+    {
+      "month": "May",
+      "revenue": 92723,
+      "costs": 56636
+    },
+    {
+      "month": "Jun",
+      "revenue": 91289,
+      "costs": 60245
+    },
+    {
+      "month": "Jul",
+      "revenue": 97228,
+      "costs": 58912
+    },
+    {
+      "month": "Aug",
+      "revenue": 94769,
+      "costs": 59005
+    },
+    {
+      "month": "Sep",
+      "revenue": 98424,
+      "costs": 61881
+    },
+    {
+      "month": "Oct",
+      "revenue": 104588,
+      "costs": 68465
+    },
+    {
+      "month": "Nov",
+      "revenue": 116352,
+      "costs": 74207
+    }
+  ],
+  "segments": [
+    {
+      "name": "Cloud compute",
+      "share": 41,
+      "color": "#FF5A45"
+    },
+    {
+      "name": "Data and storage",
+      "share": 24,
+      "color": "#1B1F2A"
+    },
+    {
+      "name": "Network and CDN",
+      "share": 15,
+      "color": "#7C8CFF"
+    },
+    {
+      "name": "Security",
+      "share": 11,
+      "color": "#F2B544"
+    },
+    {
+      "name": "Consulting",
+      "share": 9,
+      "color": "#3DBE8B"
+    }
+  ],
+  "rows": [
+    {
+      "date": "2026-01-01",
+      "customer": "Harbor Logistics",
+      "service": "Monitoring and alerts",
+      "tag": "OPS",
+      "qty": 11,
+      "unit": 42.36,
+      "amount": 465.96,
+      "status": "Overdue",
+      "no": "INV-2026-01043"
+    },
+    {
+      "date": "2026-01-04",
+      "customer": "Brightpath Education",
+      "service": "Training programme",
+      "tag": "SVC",
+      "qty": 2,
+      "unit": 91.24,
+      "amount": 182.48,
+      "status": "Paid",
+      "no": "INV-2026-01050"
+    },
+    {
+      "date": "2026-01-06",
+      "customer": "Harbor Logistics",
+      "service": "Object storage",
+      "tag": "STO",
+      "qty": 11,
+      "unit": 57.68,
+      "amount": 634.48,
+      "status": "Overdue",
+      "no": "INV-2026-01057"
+    },
+    {
+      "date": "2026-01-11",
+      "customer": "Harbor Logistics",
+      "service": "Load balancer",
+      "tag": "NET",
+      "qty": 9,
+      "unit": 107.55,
+      "amount": 967.95,
+      "status": "Paid",
+      "no": "INV-2026-01064"
+    },
+    {
+      "date": "2026-01-18",
+      "customer": "Bluefield Foods",
+      "service": "Training programme",
+      "tag": "SVC",
+      "qty": 14,
+      "unit": 128.08,
+      "amount": 1793.12,
+      "status": "Paid",
+      "no": "INV-2026-01071"
+    },
+    {
+      "date": "2026-02-03",
+      "customer": "Harbor Logistics",
+      "service": "Object storage",
+      "tag": "STO",
+      "qty": 20,
+      "unit": 133.98,
+      "amount": 2679.6,
+      "status": "Paid",
+      "no": "INV-2026-01078"
+    },
+    {
+      "date": "2026-02-12",
+      "customer": "Ironleaf Software",
+      "service": "Log retention",
+      "tag": "OPS",
+      "qty": 5,
+      "unit": 114.48,
+      "amount": 572.4,
+      "status": "Paid",
+      "no": "INV-2026-01085"
+    },
+    {
+      "date": "2026-02-15",
+      "customer": "Lakeside Travel",
+      "service": "Private network link",
+      "tag": "NET",
+      "qty": 10,
+      "unit": 44.9,
+      "amount": 449,
+      "status": "Paid",
+      "no": "INV-2026-01092"
+    },
+    {
+      "date": "2026-02-20",
+      "customer": "Cedar Health Group",
+      "service": "Managed PostgreSQL",
+      "tag": "DB",
+      "qty": 24,
+      "unit": 74.4,
+      "amount": 1785.6,
+      "status": "Paid",
+      "no": "INV-2026-01099"
+    },
+    {
+      "date": "2026-03-08",
+      "customer": "Triangle Architects",
+      "service": "Log retention",
+      "tag": "OPS",
+      "qty": 9,
+      "unit": 127.93,
+      "amount": 1151.37,
+      "status": "Pending",
+      "no": "INV-2026-01106"
+    },
+    {
+      "date": "2026-03-16",
+      "customer": "Triangle Architects",
+      "service": "CDN traffic",
+      "tag": "NET",
+      "qty": 8,
+      "unit": 76.45,
+      "amount": 611.6,
+      "status": "Paid",
+      "no": "INV-2026-01113"
+    },
+    {
+      "date": "2026-03-24",
+      "customer": "Lakeside Travel",
+      "service": "TLS certificates",
+      "tag": "SEC",
+      "qty": 18,
+      "unit": 94.2,
+      "amount": 1695.6,
+      "status": "Paid",
+      "no": "INV-2026-01120"
+    },
+    {
+      "date": "2026-03-28",
+      "customer": "Bluefield Foods",
+      "service": "Backup and archive",
+      "tag": "STO",
+      "qty": 23,
+      "unit": 79.77,
+      "amount": 1834.71,
+      "status": "Paid",
+      "no": "INV-2026-01127"
+    },
+    {
+      "date": "2026-04-01",
+      "customer": "Ironleaf Software",
+      "service": "CDN traffic",
+      "tag": "NET",
+      "qty": 18,
+      "unit": 154.69,
+      "amount": 2784.42,
+      "status": "Overdue",
+      "no": "INV-2026-01134"
+    },
+    {
+      "date": "2026-04-09",
+      "customer": "Ironleaf Software",
+      "service": "Log retention",
+      "tag": "OPS",
+      "qty": 4,
+      "unit": 73.53,
+      "amount": 294.12,
+      "status": "Paid",
+      "no": "INV-2026-01141"
+    },
+    {
+      "date": "2026-04-20",
+      "customer": "Bluefield Foods",
+      "service": "Monitoring and alerts",
+      "tag": "OPS",
+      "qty": 11,
+      "unit": 6.52,
+      "amount": 71.72,
+      "status": "Paid",
+      "no": "INV-2026-01148"
+    },
+    {
+      "date": "2026-04-23",
+      "customer": "Bluefield Foods",
+      "service": "Managed PostgreSQL",
+      "tag": "DB",
+      "qty": 10,
+      "unit": 25.61,
+      "amount": 256.1,
+      "status": "Paid",
+      "no": "INV-2026-01155"
+    },
+    {
+      "date": "2026-05-06",
+      "customer": "Triangle Architects",
+      "service": "Web application firewall",
+      "tag": "SEC",
+      "qty": 7,
+      "unit": 163.26,
+      "amount": 1142.82,
+      "status": "Paid",
+      "no": "INV-2026-01162"
+    },
+    {
+      "date": "2026-05-07",
+      "customer": "Summit Energy",
+      "service": "Training programme",
+      "tag": "SVC",
+      "qty": 4,
+      "unit": 62.3,
+      "amount": 249.2,
+      "status": "Paid",
+      "no": "INV-2026-01169"
+    },
+    {
+      "date": "2026-05-11",
+      "customer": "Bluefield Foods",
+      "service": "Kubernetes cluster",
+      "tag": "CMP",
+      "qty": 9,
+      "unit": 45.58,
+      "amount": 410.22,
+      "status": "Paid",
+      "no": "INV-2026-01176"
+    },
+    {
+      "date": "2026-05-15",
+      "customer": "Ironleaf Software",
+      "service": "Log retention",
+      "tag": "OPS",
+      "qty": 18,
+      "unit": 99.29,
+      "amount": 1787.22,
+      "status": "Paid",
+      "no": "INV-2026-01183"
+    },
+    {
+      "date": "2026-06-01",
+      "customer": "Bluefield Foods",
+      "service": "Managed PostgreSQL",
+      "tag": "DB",
+      "qty": 18,
+      "unit": 70.5,
+      "amount": 1269,
+      "status": "Paid",
+      "no": "INV-2026-01190"
+    },
+    {
+      "date": "2026-06-04",
+      "customer": "Triangle Architects",
+      "service": "Private network link",
+      "tag": "NET",
+      "qty": 17,
+      "unit": 147.79,
+      "amount": 2512.43,
+      "status": "Overdue",
+      "no": "INV-2026-01197"
+    },
+    {
+      "date": "2026-06-13",
+      "customer": "Bluefield Foods",
+      "service": "Load balancer",
+      "tag": "NET",
+      "qty": 10,
+      "unit": 70.36,
+      "amount": 703.6,
+      "status": "Paid",
+      "no": "INV-2026-01204"
+    },
+    {
+      "date": "2026-06-23",
+      "customer": "Redline Motors",
+      "service": "Monitoring and alerts",
+      "tag": "OPS",
+      "qty": 5,
+      "unit": 144.41,
+      "amount": 722.05,
+      "status": "Paid",
+      "no": "INV-2026-01211"
+    },
+    {
+      "date": "2026-06-28",
+      "customer": "Meridian Textiles",
+      "service": "Object storage",
+      "tag": "STO",
+      "qty": 21,
+      "unit": 151.06,
+      "amount": 3172.26,
+      "status": "Paid",
+      "no": "INV-2026-01218"
+    },
+    {
+      "date": "2026-07-05",
+      "customer": "Lakeside Travel",
+      "service": "Backup and archive",
+      "tag": "STO",
+      "qty": 3,
+      "unit": 125.53,
+      "amount": 376.59,
+      "status": "Paid",
+      "no": "INV-2026-01225"
+    },
+    {
+      "date": "2026-07-07",
+      "customer": "Bluefield Foods",
+      "service": "Object storage",
+      "tag": "STO",
+      "qty": 20,
+      "unit": 45.02,
+      "amount": 900.4,
+      "status": "Paid",
+      "no": "INV-2026-01232"
+    },
+    {
+      "date": "2026-07-13",
+      "customer": "Triangle Architects",
+      "service": "Backup and archive",
+      "tag": "STO",
+      "qty": 23,
+      "unit": 97,
+      "amount": 2231,
+      "status": "Pending",
+      "no": "INV-2026-01239"
+    },
+    {
+      "date": "2026-07-16",
+      "customer": "Cedar Health Group",
+      "service": "Managed PostgreSQL",
+      "tag": "DB",
+      "qty": 9,
+      "unit": 11.47,
+      "amount": 103.23,
+      "status": "Paid",
+      "no": "INV-2026-01246"
+    },
+    {
+      "date": "2026-08-11",
+      "customer": "Bluefield Foods",
+      "service": "Private network link",
+      "tag": "NET",
+      "qty": 10,
+      "unit": 84.78,
+      "amount": 847.8,
+      "status": "Overdue",
+      "no": "INV-2026-01253"
+    },
+    {
+      "date": "2026-08-19",
+      "customer": "Cedar Health Group",
+      "service": "Monitoring and alerts",
+      "tag": "OPS",
+      "qty": 2,
+      "unit": 105.84,
+      "amount": 211.68,
+      "status": "Pending",
+      "no": "INV-2026-01260"
+    },
+    {
+      "date": "2026-08-23",
+      "customer": "Ironleaf Software",
+      "service": "CDN traffic",
+      "tag": "NET",
+      "qty": 10,
+      "unit": 40.54,
+      "amount": 405.4,
+      "status": "Paid",
+      "no": "INV-2026-01267"
+    },
+    {
+      "date": "2026-08-27",
+      "customer": "Lakeside Travel",
+      "service": "Cloud servers",
+      "tag": "CMP",
+      "qty": 12,
+      "unit": 123.1,
+      "amount": 1477.2,
+      "status": "Paid",
+      "no": "INV-2026-01274"
+    },
+    {
+      "date": "2026-09-01",
+      "customer": "Harbor Logistics",
+      "service": "Backup and archive",
+      "tag": "STO",
+      "qty": 12,
+      "unit": 146.87,
+      "amount": 1762.44,
+      "status": "Paid",
+      "no": "INV-2026-01281"
+    },
+    {
+      "date": "2026-09-19",
+      "customer": "Lakeside Travel",
+      "service": "Kubernetes cluster",
+      "tag": "CMP",
+      "qty": 10,
+      "unit": 92.1,
+      "amount": 921,
+      "status": "Paid",
+      "no": "INV-2026-01288"
+    },
+    {
+      "date": "2026-09-21",
+      "customer": "Summit Energy",
+      "service": "Email infrastructure",
+      "tag": "OPS",
+      "qty": 14,
+      "unit": 13.37,
+      "amount": 187.18,
+      "status": "Paid",
+      "no": "INV-2026-01295"
+    },
+    {
+      "date": "2026-09-25",
+      "customer": "Bluefield Foods",
+      "service": "Cloud servers",
+      "tag": "CMP",
+      "qty": 12,
+      "unit": 106.81,
+      "amount": 1281.72,
+      "status": "Overdue",
+      "no": "INV-2026-01302"
+    },
+    {
+      "date": "2026-10-02",
+      "customer": "Summit Energy",
+      "service": "TLS certificates",
+      "tag": "SEC",
+      "qty": 4,
+      "unit": 81.05,
+      "amount": 324.2,
+      "status": "Paid",
+      "no": "INV-2026-01309"
+    },
+    {
+      "date": "2026-10-12",
+      "customer": "Bluefield Foods",
+      "service": "Backup and archive",
+      "tag": "STO",
+      "qty": 24,
+      "unit": 160.03,
+      "amount": 3840.72,
+      "status": "Overdue",
+      "no": "INV-2026-01316"
+    },
+    {
+      "date": "2026-10-27",
+      "customer": "Triangle Architects",
+      "service": "CDN traffic",
+      "tag": "NET",
+      "qty": 8,
+      "unit": 16.38,
+      "amount": 131.04,
+      "status": "Overdue",
+      "no": "INV-2026-01323"
+    },
+    {
+      "date": "2026-10-28",
+      "customer": "Ironleaf Software",
+      "service": "Managed PostgreSQL",
+      "tag": "DB",
+      "qty": 19,
+      "unit": 133.92,
+      "amount": 2544.48,
+      "status": "Paid",
+      "no": "INV-2026-01330"
+    },
+    {
+      "date": "2026-11-07",
+      "customer": "Ironleaf Software",
+      "service": "Backup and archive",
+      "tag": "STO",
+      "qty": 18,
+      "unit": 120.53,
+      "amount": 2169.54,
+      "status": "Paid",
+      "no": "INV-2026-01337"
+    },
+    {
+      "date": "2026-11-07",
+      "customer": "Triangle Architects",
+      "service": "Private network link",
+      "tag": "NET",
+      "qty": 6,
+      "unit": 65.85,
+      "amount": 395.1,
+      "status": "Paid",
+      "no": "INV-2026-01344"
+    },
+    {
+      "date": "2026-11-15",
+      "customer": "Bluefield Foods",
+      "service": "Private network link",
+      "tag": "NET",
+      "qty": 9,
+      "unit": 25.02,
+      "amount": 225.18,
+      "status": "Paid",
+      "no": "INV-2026-01351"
+    },
+    {
+      "date": "2026-11-23",
+      "customer": "Summit Energy",
+      "service": "Private network link",
+      "tag": "NET",
+      "qty": 12,
+      "unit": 133.17,
+      "amount": 1598.04,
+      "status": "Paid",
+      "no": "INV-2026-01358"
+    }
+  ],
+  "subtotal": 52132.97,
+  "taxRate": 8,
+  "tax": 4170.64,
+  "total": 56303.61
+}

@@ -22,6 +22,11 @@ Single static Go binary (no cgo) plus Chromium; Docker image ~256 MiB for linux/
 Licensed under [Apache-2.0](LICENSE); every dependency is permissively licensed ([NOTICE](NOTICE)).
 Why these choices: [docs/comparison.md](docs/comparison.md).
 
+Example output: [examples/annual-report](examples/annual-report) builds a six-page report with a full-bleed
+cover, JavaScript charts, a landscape page, a long table, page numbers, a seal and PDF/A-2b.
+
+[![Six pages of the example report](examples/annual-report/preview.png)](examples/annual-report)
+
 ## Install
 
 ```bash

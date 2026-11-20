@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>{{report.title}}</title>
+<!--
+  pidief annual-report example. Shows what a Chromium-based renderer can do that older HTML-to-PDF tools cannot:
+  a full-bleed cover, a landscape page inside a portrait document (named @page), charts drawn by JavaScript
+  before printing, a long table that repeats its header and never splits a row, and modern CSS
+  (grid, conic-gradient, mask, columns, hyphenation). Numbers and dates are formatted in the page with Intl
+  (en-US), because pidief's template helpers format for tr-TR.
+-->
+<style>
+  :root {
+    --ink: #1B1F2A; --paper: #F5F3EE; --line: #E4E0D6; --muted: #7A7F8C;
+    --coral: #FF5A45; --coral-soft: #FFE3DE; --amber: #F2B544;
+  }
+  @page { size: A4; margin: 18mm 16mm 20mm; }
+  @page cover { margin: 0; }
+  @page wide { size: A4 landscape; margin: 14mm 16mm 18mm; }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { margin: 0; font-family: Onest, sans-serif; color: var(--ink); font-size: 10pt; line-height: 1.5; font-variant-numeric: tabular-nums; }
+  h1, h2, h3 { margin: 0; letter-spacing: -0.02em; line-height: 1.1; }
+  h2 { font-size: 20pt; font-weight: 800; }
+  .kicker { font-size: 7.5pt; letter-spacing: .16em; text-transform: uppercase; color: var(--coral); font-weight: 700; margin-bottom: 6px; }
+  section { break-before: page; }
+
+  /* ---------- cover: full bleed; zero margins leave no room for a footer ---------- */
+  .cover {
+    page: cover; position: relative; width: 210mm; height: 297mm; overflow: hidden;
+    background: radial-gradient(120% 80% at 100% 0%, #2E3550 0%, var(--ink) 55%), var(--ink);
+    color: var(--paper); padding: 26mm 22mm;
+  }
+  .cover .orb {
+    position: absolute; width: 150mm; height: 150mm; right: -48mm; top: 46mm; border-radius: 50%;
+    background: conic-gradient(from 200deg, var(--coral), #FF8A5C, #FFC9A8, var(--coral));
+    mask: radial-gradient(circle, transparent 38%, #000 38.4%);
+  }
+  .cover .grid {
+    position: absolute; inset: 0; opacity: .14;
+    background-image: linear-gradient(var(--paper) 1px, transparent 1px), linear-gradient(90deg, var(--paper) 1px, transparent 1px);
+    background-size: 12mm 12mm;
+    mask: linear-gradient(160deg, #000 0%, transparent 60%);
+  }
+  .cover .brand { display: flex; align-items: center; gap: 4mm; font-weight: 700; font-size: 13pt; position: relative; }
+  .cover .brand svg { width: 9mm; height: 9mm; }
+  .cover .title { position: absolute; left: 22mm; right: 22mm; bottom: 70mm; }
+  .cover .title .kicker { color: #FF8A75; }
+  .cover h1 { font-size: 40pt; font-weight: 800; max-width: 150mm; }
+  .cover h1 em { font-style: normal; color: var(--coral); }
+  .cover .meta { position: absolute; left: 22mm; right: 22mm; bottom: 24mm; display: grid; grid-template-columns: repeat(4, 1fr); gap: 6mm; border-top: 1px solid rgba(245,243,238,.2); padding-top: 6mm; }
+  .cover .meta b { display: block; font-size: 7pt; letter-spacing: .14em; text-transform: uppercase; color: #9AA0AE; font-weight: 600; margin-bottom: 1.5mm; }
+  .cover .meta span { font-size: 10pt; }
+
+  /* ---------- summary ---------- */
+  .lead { margin-bottom: 7mm; }
+  .lead p { margin: 2mm 0 0; color: var(--muted); max-width: 120mm; }
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4mm; margin-bottom: 7mm; }
+  .kpi { border: 1px solid var(--line); border-radius: 4mm; padding: 4mm; position: relative; overflow: hidden; }
+  .kpi::after { content: ""; position: absolute; inset: auto 0 0 0; height: 1.2mm; background: linear-gradient(90deg, var(--coral), var(--amber)); }
+  .kpi small { color: var(--muted); font-size: 7.5pt; display: block; min-height: 2.6em; }
+  .kpi b { display: block; font-size: 15pt; font-weight: 800; letter-spacing: -.02em; margin: 1mm 0; white-space: nowrap; }
+  .kpi i { font-style: normal; font-size: 7.5pt; font-weight: 700; padding: .4mm 2mm; border-radius: 9px; }
+  .kpi i.good { background: #DDF5EB; color: #1E7A55; } .kpi i.bad { background: var(--coral-soft); color: #B3321F; }
+  .charts { display: grid; grid-template-columns: 1.75fr 1fr; gap: 5mm; }
+  .card { border: 1px solid var(--line); border-radius: 4mm; padding: 5mm; background: #FCFBF8; }
+  .card h3 { font-size: 10.5pt; margin-bottom: 1mm; }
+  .card .sub { color: var(--muted); font-size: 7.5pt; margin-bottom: 3mm; }
+  #trend { width: 100%; height: 76mm; display: block; }
+  .legend { display: flex; gap: 5mm; font-size: 7.5pt; color: var(--muted); }
+  .legend i { display: inline-block; width: 3mm; height: 3mm; border-radius: 1mm; margin-right: 1.5mm; vertical-align: -.4mm; }
+  .donut { width: 46mm; height: 46mm; margin: 2mm auto 4mm; border-radius: 50%; position: relative; background: var(--line); }
+  .donut::after { content: attr(data-label); position: absolute; inset: 9mm; border-radius: 50%; background: #FCFBF8;
+    display: grid; place-items: center; font-weight: 800; font-size: 11pt; text-align: center; line-height: 1.1; white-space: pre; }
+  .seg { display: grid; grid-template-columns: 3mm 1fr auto; gap: 2mm; align-items: center; font-size: 8pt; padding: 1mm 0; border-bottom: 1px dashed var(--line); }
+  .seg i { width: 3mm; height: 3mm; border-radius: 1mm; }
+  .note { margin-top: 6mm; columns: 2; column-gap: 8mm; text-align: justify; hyphens: auto; font-size: 9pt; color: #3A3F4C; }
+  .note p { margin: 0 0 2mm; }
+  .note p:first-child::first-letter { float: left; font-size: 30pt; line-height: .9; font-weight: 800; color: var(--coral); padding: 1mm 2mm 0 0; }
+
+  /* ---------- landscape page inside a portrait document ---------- */
+  .wide { page: wide; }
+  .heat { display: grid; grid-template-columns: 38mm repeat(var(--months, 12), 1fr); gap: 1.4mm; margin-top: 6mm; font-size: 8pt; }
+  .heat .h { color: var(--muted); text-align: center; font-weight: 600; font-size: 7.5pt; }
+  .heat .r { font-weight: 600; align-self: center; }
+  .heat .c { height: 19mm; border-radius: 2mm; display: grid; place-items: center; font-weight: 700; font-size: 7.5pt; }
+  .scale { display: flex; align-items: center; gap: 3mm; margin-top: 5mm; font-size: 7.5pt; color: var(--muted); }
+  .scale span { width: 60mm; height: 2.5mm; border-radius: 2mm; background: linear-gradient(90deg, #FFF1EE, var(--coral), #8E1F10); }
+
+  /* ---------- long table: the header repeats, rows never split ---------- */
+  table { width: 100%; border-collapse: collapse; font-size: 8.4pt; margin-top: 5mm; }
+  thead { display: table-header-group; }
+  tfoot { display: table-footer-group; }
+  thead th { background: var(--ink); color: var(--paper); text-align: left; font-weight: 600; padding: 2.4mm 2.2mm; font-size: 7.6pt; letter-spacing: .02em; }
+  thead th:first-child { border-radius: 2mm 0 0 2mm; } thead th:last-child { border-radius: 0 2mm 2mm 0; }
+  tfoot td { color: var(--muted); font-size: 7pt; text-align: right; padding-top: 2mm; }
+  tbody tr { break-inside: avoid; }
+  tbody td { padding: 2.1mm 2.2mm; border-bottom: 1px solid var(--line); vertical-align: middle; }
+  tbody tr:nth-child(even) td { background: #FAF8F4; }
+  td.num, th.num { text-align: right; white-space: nowrap; }
+  td.nowrap { white-space: nowrap; }
+  td.no { font-family: "JetBrains Mono", Consolas, monospace; font-size: 7.6pt; color: var(--muted); white-space: nowrap; }
+  .tag { display: inline-block; font-size: 6.6pt; font-weight: 700; letter-spacing: .06em; padding: .3mm 1.6mm; border-radius: 1.5mm; background: #EEF0FF; color: #4252C9; }
+  .pill { display: inline-block; font-size: 7pt; font-weight: 700; padding: .5mm 2.2mm; border-radius: 9px; white-space: nowrap; }
+  .pill.Paid { background: #DDF5EB; color: #1E7A55; } .pill.Pending { background: #FFF2D6; color: #9A6A00; } .pill.Overdue { background: var(--coral-soft); color: #B3321F; }
+
+  .totals { break-inside: avoid; margin-top: 6mm; display: grid; grid-template-columns: 1fr 72mm; gap: 8mm; align-items: start; }
+  .words { border-left: 1.2mm solid var(--coral); padding: 2mm 4mm; background: #FFF6F4; font-size: 9pt; border-radius: 0 2mm 2mm 0; }
+  .words b { display: block; font-size: 7pt; letter-spacing: .14em; text-transform: uppercase; color: var(--coral); margin-bottom: 1mm; }
+  .sum div { display: flex; justify-content: space-between; padding: 1.6mm 0; border-bottom: 1px solid var(--line); }
+  .sum div:last-child { border: 0; margin-top: 1mm; padding: 3mm 4mm; background: var(--ink); color: var(--paper); border-radius: 2mm; font-weight: 800; font-size: 12pt; }
+  .sign { break-inside: avoid; margin-top: 12mm; display: grid; grid-template-columns: 1fr 1fr; gap: 14mm; }
+  .sign div { border-top: 1px solid var(--ink); padding-top: 2mm; font-size: 8pt; color: var(--muted); }
+  .sign b { display: block; color: var(--ink); font-size: 9.5pt; }
+</style>
+</head>
+<body>
+
+<!-- 1. COVER -->
+<div class="cover">
+  <div class="grid"></div>
+  <div class="orb"></div>
+  <div class="brand">
+    <svg viewBox="112 40 288 432"><path d="M164 420V256M164 256A92 92 0 0 1 348 256" stroke="#F5F3EE" stroke-width="52" fill="none" stroke-linecap="round"/><path d="M348 92V256M348 256A92 92 0 0 1 164 256" stroke="#FF5A45" stroke-width="52" fill="none" stroke-linecap="round"/></svg>
+    {{company.short}}
+  </div>
+  <div class="title">
+    <div class="kicker">{{report.period}} · {{report.no}}</div>
+    <h1>2026 Annual <em>Revenue Report</em></h1>
+  </div>
+  <div class="meta">
+    <div><b>Company</b><span>{{company.name}}</span></div>
+    <div><b>Period</b><span>{{report.period}}</span></div>
+    <div><b>Report date</b><span data-date="{{report.date}}" data-style="full"></span></div>
+    <div><b>Prepared by</b><span>{{report.preparedBy}}</span></div>
+  </div>
+</div>
+
+<!-- 2. SUMMARY -->
+<section>
+  <div class="lead">
+    <div class="kicker">01 · Executive summary</div>
+    <h2>Growth sped up, collections got faster.</h2>
+    <p>Over {{report.period}}, {{company.short}} averaged <b data-money="{{div (sum monthly "revenue") (length monthly)}}" data-digits="0"></b> of revenue a month, its strongest stretch so far.</p>
+  </div>
+  <div class="kpis">
+    {{#each kpis}}
+    <div class="kpi">
+      <small>{{name}}</small>
+      {{#if (eq kind "money")}}<b data-money="{{value}}" data-digits="0"></b>
+      {{else if (eq kind "percent")}}<b data-num="{{value}}" data-digits="3" data-suffix="%"></b>
+      {{else if (eq kind "days")}}<b data-num="{{value}}" data-suffix=" days"></b>
+      {{else}}<b data-num="{{value}}"></b>{{/if}}
+      {{! fewer days outstanding is good news, so the colour follows the meaning, not the sign }}
+      <i class="{{#if (eq kind "days")}}{{#if (lt change 0)}}good{{else}}bad{{/if}}{{else}}{{#if (gt change 0)}}good{{else}}bad{{/if}}{{/if}}">{{#if (gt change 0)}}▲{{else}}▼{{/if}} <span data-num="{{change}}" data-abs="1" data-digits="2" data-suffix="%"></span></i>
+    </div>
+    {{/each}}
+  </div>
+  <div class="charts">
+    <div class="card">
+      <h3>Monthly revenue and costs</h3>
+      <div class="sub">Bars show revenue, the line shows costs · USD</div>
+      <svg id="trend"></svg>
+      <div class="legend"><span><i style="background:var(--coral)"></i>Revenue</span><span><i style="background:var(--ink)"></i>Costs</span><span><i style="background:linear-gradient(90deg,#3DBE8B55,#3DBE8B)"></i>Gross margin</span></div>
+    </div>
+    <div class="card">
+      <h3>Revenue mix</h3>
+      <div class="sub">By service group</div>
+      <div class="donut" data-label="{{length segments}} service&#10;groups"></div>
+      {{#each segments}}<div class="seg"><i style="background:{{color}}"></i><span>{{name}}</span><b>{{share}}%</b></div>{{/each}}
+    </div>
+  </div>
+  <div class="note">
+    <p>Revenue in the first eleven months grew clearly over the same period last year. Most of the growth came from managed databases and Kubernetes clusters, both of which expanded quickly as enterprise customers moved workloads from their own data centres to the cloud. A short dip in August, caused by projects postponed over the summer, was recovered in September.</p>
+    <p>Energy and hardware costs rose, yet economies of scale kept the gross margin steady. Days sales outstanding fell after automatic reminders and direct debit collection went live. For the next period the priorities are a larger share for security services, more network locations in two new regions, and higher revenue per customer.</p>
+  </div>
+</section>
+
+<!-- 3. LANDSCAPE PAGE -->
+<section class="wide">
+  <div class="kicker">02 · Monthly intensity</div>
+  <h2>Which service grew in which month?</h2>
+  <div class="heat" id="heat"></div>
+  <div class="scale">Low <span></span> High · each cell is the service group's share of that month's revenue</div>
+</section>
+
+<!-- 4. LONG TABLE -->
+<section>
+  <div class="kicker">03 · Invoice register</div>
+  <h2>Invoices issued in the period</h2>
+  <table>
+    <thead><tr><th>Invoice</th><th>Date</th><th>Customer</th><th>Service</th><th class="num">Qty</th><th class="num">Unit price</th><th class="num">Amount</th><th>Status</th></tr></thead>
+    <tfoot><tr><td colspan="8">{{report.no}} · Invoice register · amounts before tax</td></tr></tfoot>
+    <tbody>
+      {{#each rows}}
+      <tr>
+        <td class="no">{{no}}</td>
+        <td class="nowrap" data-date="{{date}}" data-style="short"></td>
+        <td>{{customer}}</td>
+        <td>{{service}} <span class="tag">{{tag}}</span></td>
+        <td class="num">{{qty}}</td>
+        <td class="num" data-money="{{unit}}"></td>
+        <td class="num"><b data-money="{{amount}}"></b></td>
+        <td><span class="pill {{status}}">{{status}}</span></td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+  <div class="totals">
+    <div class="words"><b>Amount in words</b><span data-words="{{total}}"></span></div>
+    <div class="sum">
+      <div><span>Subtotal ({{length rows}} invoices)</span><b data-money="{{subtotal}}"></b></div>
+      <div><span>Sales tax {{taxRate}}%</span><b data-money="{{tax}}"></b></div>
+      <div><span>Total</span><span data-money="{{total}}"></span></div>
+    </div>
+  </div>
+  <div class="sign">
+    <div><b>Chief Financial Officer</b>{{company.name}}</div>
+    <div><b>Chief Executive Officer</b>{{company.city}}, <span data-date="{{report.date}}" data-style="long"></span></div>
+  </div>
+</section>
+
+<script>
+  // Everything below runs in Chromium before printing; pidief waits for window.ready (--wait-for-expression).
+  const monthly = {{{json monthly}}};
+  const segments = {{{json segments}}};
+  const LOCALE = "en-US";
+
+  // ---- formatting: money, numbers, dates and amounts in words
+  const money = (d) => new Intl.NumberFormat(LOCALE, { style: "currency", currency: "USD", minimumFractionDigits: d, maximumFractionDigits: d });
+  document.querySelectorAll("[data-money]").forEach((e) => { e.textContent = money(+(e.dataset.digits ?? 2)).format(+e.dataset.money); });
+  document.querySelectorAll("[data-num]").forEach((e) => {
+    const d = +(e.dataset.digits ?? 0), v = +e.dataset.num;
+    e.textContent = (e.dataset.abs ? Math.abs(v) : v).toLocaleString(LOCALE, { minimumFractionDigits: d, maximumFractionDigits: d }) + (e.dataset.suffix || "");
+  });
+  const dateStyles = { short: { month: "short", day: "numeric" }, long: { dateStyle: "long" }, full: { dateStyle: "full" } };
+  document.querySelectorAll("[data-date]").forEach((e) => {
+    e.textContent = new Date(e.dataset.date + "T12:00:00").toLocaleDateString(LOCALE, dateStyles[e.dataset.style] || dateStyles.long);
+  });
+  const ONES = ["", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve",
+    "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"];
+  const TENS = ["", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"];
+  const below1000 = (n) => [n >= 100 ? ONES[Math.floor(n / 100)] + " hundred" : "",
+    n % 100 < 20 ? ONES[n % 100] : TENS[Math.floor(n % 100 / 10)] + (n % 10 ? "-" + ONES[n % 10] : "")].filter(Boolean).join(" ");
+  const words = (n) => {
+    if (n === 0) return "zero";
+    const parts = [];
+    [[1e9, "billion"], [1e6, "million"], [1e3, "thousand"], [1, ""]].forEach(([u, name]) => {
+      const k = Math.floor(n / u) % 1000;
+      if (k) parts.push(below1000(k) + (name ? " " + name : ""));
+    });
+    return parts.join(" ");
+  };
+  document.querySelectorAll("[data-words]").forEach((e) => {
+    const v = Math.round(+e.dataset.words * 100), dollars = Math.floor(v / 100), cents = v % 100;
+    const s = words(dollars) + " dollars and " + words(cents) + " cents";
+    e.textContent = s[0].toUpperCase() + s.slice(1);
+  });
+
+  // ---- trend chart: bars, cost line and margin area as SVG
+  const NS = "http://www.w3.org/2000/svg";
+  const svg = document.getElementById("trend");
+  const el = (n, a, p) => { const e = document.createElementNS(NS, n); for (const k in a) e.setAttribute(k, a[k]); (p || svg).appendChild(e); return e; };
+  const compact = new Intl.NumberFormat(LOCALE, { notation: "compact", maximumFractionDigits: 1 });
+  const W = svg.clientWidth, H = svg.clientHeight, L = 34, B = 18, T = 6;
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  const max = Math.ceil(Math.max(...monthly.map((m) => m.revenue)) / 20000) * 20000;
+  const x = (i) => L + (i + 0.5) * (W - L) / monthly.length, y = (v) => T + (H - T - B) * (1 - v / max);
+  const defs = el("defs", {});
+  const g1 = el("linearGradient", { id: "bar", x1: 0, y1: 0, x2: 0, y2: 1 }, defs);
+  el("stop", { offset: 0, "stop-color": "#FF5A45" }, g1); el("stop", { offset: 1, "stop-color": "#FF8A5C" }, g1);
+  const g2 = el("linearGradient", { id: "area", x1: 0, y1: 0, x2: 0, y2: 1 }, defs);
+  el("stop", { offset: 0, "stop-color": "#3DBE8B", "stop-opacity": .35 }, g2); el("stop", { offset: 1, "stop-color": "#3DBE8B", "stop-opacity": .02 }, g2);
+  for (let v = 0; v <= max; v += max / 4) {
+    el("line", { x1: L, x2: W, y1: y(v), y2: y(v), stroke: "#E4E0D6", "stroke-dasharray": v ? "2 3" : "" });
+    el("text", { x: L - 5, y: y(v) + 3, "text-anchor": "end", "font-size": 7, fill: "#7A7F8C" }).textContent = "$" + compact.format(v);
+  }
+  const bw = (W - L) / monthly.length * 0.56;
+  const area = monthly.map((m, i) => `${x(i)},${y(m.revenue)}`).join(" ") + " " + monthly.map((m, i) => `${x(i)},${y(m.costs)}`).reverse().join(" ");
+  el("polygon", { points: area, fill: "url(#area)" });
+  monthly.forEach((m, i) => {
+    el("rect", { x: x(i) - bw / 2, y: y(m.revenue), width: bw, height: y(0) - y(m.revenue), rx: 2.5, fill: "url(#bar)", opacity: .86 });
+    el("text", { x: x(i), y: H - 5, "text-anchor": "middle", "font-size": 7.5, fill: "#7A7F8C" }).textContent = m.month;
+  });
+  el("polyline", { points: monthly.map((m, i) => `${x(i)},${y(m.costs)}`).join(" "), fill: "none", stroke: "#1B1F2A", "stroke-width": 1.6, "stroke-linejoin": "round" });
+  monthly.forEach((m, i) => el("circle", { cx: x(i), cy: y(m.costs), r: 2.2, fill: "#fff", stroke: "#1B1F2A", "stroke-width": 1.2 }));
+  const best = monthly.reduce((a, m, i) => (m.revenue > monthly[a].revenue ? i : a), 0);
+  const tx = Math.min(W - 36, x(best)), ty = y(monthly[best].revenue);
+  el("rect", { x: tx - 34, y: ty - 22, width: 68, height: 15, rx: 4, fill: "#1B1F2A" });
+  el("text", { x: tx, y: ty - 11.5, "text-anchor": "middle", "font-size": 7.5, "font-weight": 700, fill: "#F5F3EE" }).textContent = "Peak: $" + compact.format(monthly[best].revenue);
+
+  // ---- donut: conic-gradient from cumulative shares
+  let acc = 0;
+  document.querySelector(".donut").style.background = "conic-gradient(" + segments.map((s) => `${s.color} ${acc}% ${(acc += s.share)}%`).join(",") + ")";
+
+  // ---- heatmap on the landscape page
+  const heat = document.getElementById("heat");
+  heat.style.setProperty("--months", monthly.length);
+  const cell = (cls, text, style) => { const d = document.createElement("div"); d.className = cls; d.textContent = text; if (style) d.style.cssText = style; heat.appendChild(d); };
+  cell("h", "");
+  monthly.forEach((m) => cell("h", m.month));
+  let seed = 7; const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+  const mix = (a, b, t) => a.map((v, i) => Math.round(v + (b[i] - v) * t));
+  segments.forEach((s, r) => {
+    cell("r", s.name);
+    monthly.forEach((m, i) => {
+      const v = Math.max(2, s.share * (0.7 + 0.6 * rnd()) + (r === 0 ? i * 0.6 : r === 3 ? -i * 0.25 : 0));
+      const t = Math.min(1, v / 50);
+      const c = t < .5 ? mix([255, 241, 238], [255, 90, 69], t * 2) : mix([255, 90, 69], [142, 31, 16], (t - .5) * 2);
+      cell("c", v.toFixed(0) + "%", `background: rgb(${c}); color: ${t > .35 ? "#fff" : "#7A3A2E"}`);
+    });
+  });
+
+  window.ready = true;
+</script>
+</body>
+</html>
